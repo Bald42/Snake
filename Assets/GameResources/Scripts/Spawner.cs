@@ -5,7 +5,8 @@ public class Spawner : MonoBehaviour
 {
     public void Init(GameObject parent)
     {
-        GameObject emptyGameObject = Instantiate(new GameObject(), parent.transform);
+        GameObject emptyGameObject = new GameObject();
+        emptyGameObject.transform.SetParent(parent.transform);
         emptyGameObject.name = "Spawner";
         emptyGameObject.AddComponent<Spawner>();
     }
