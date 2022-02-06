@@ -6,6 +6,6 @@ public class GameController
 
     public void Init()
     {
-
+        location.Init();
     }
 }
