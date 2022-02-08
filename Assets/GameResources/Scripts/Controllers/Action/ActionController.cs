@@ -1,9 +1,11 @@
-using System.Collections.Generic;
-using System.Collections;
+using static Enums;
 using UnityEngine;
+using System;
 
 public class ActionController
 {
+    public Action<DirectionMove> OnChangeDirectionMoveEvent = null;
+
     public void Init()
     {
         Subscribe();

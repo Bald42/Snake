@@ -25,6 +25,14 @@ public class MainController : MonoBehaviour
         }
     }
 
+    public GameController GameController
+    {
+        get
+        {
+            return gameController;
+        }
+    }
+
     public int Width
     {
         get
