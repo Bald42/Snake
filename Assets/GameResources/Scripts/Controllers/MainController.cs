@@ -1,8 +1,12 @@
 using UnityEngine;
 using DataBase;
+using System;
 
 public class MainController : MonoBehaviour
 {
+    public Action OnUpdateEvent = null;
+    public Action OnDestroyEvent = null;
+
     [SerializeField] private int width = 0;
     [SerializeField] private int height = 0;
     [SerializeField] private SceneLinks sceneLinks = null;
@@ -18,6 +22,14 @@ public class MainController : MonoBehaviour
         get
         {
             return instance;
+        }
+    }
+
+    public GameController GameController
+    {
+        get
+        {
+            return gameController;
         }
     }
 
@@ -74,5 +86,15 @@ public class MainController : MonoBehaviour
     {
         spawner = new Spawner();
         spawner.Init(gameObject);
+    }
+
+    private void Update()
+    {
+        OnUpdateEvent?.Invoke();
+    }
+
+    private void OnDestroy()
+    {
+        OnDestroyEvent?.Invoke();
     }
 }
