@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 using System;
 
 public class SnakePoints
@@ -53,6 +54,11 @@ public class SnakePoints
     public SnakePoints(int id)
     {
         this.id = id;
+    }
+
+    public PointPosition GetPointPosition(PointPosition pointPosition)
+    {
+        return pointPositions.Where(x => x.Width == pointPosition.Width && x.Height == pointPosition.Height).FirstOrDefault();
     }
 
     // TODO сделать через враппер

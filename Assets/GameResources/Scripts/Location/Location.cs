@@ -7,10 +7,12 @@ public class Location
 
     private SnakePoints snakePoints = null;
     private FoodPoints foodPoints = null;
+    private WallPoints wallPoints = null;
 
     public void Init()
     {
         GenerateLocation();
+        CheckGenerateWall();
         Subscribe();
     }
 
@@ -42,6 +44,11 @@ public class Location
         if (foodPoints != null)
         {
             foodPoints.OnAddFoodPointEvent -= OnAddFoodPointHandler;
+        }
+
+        if (wallPoints != null)
+        {
+            wallPoints.OnAddWallPointEvent -= OnAddWallPointHandler;
         }
     }
 
@@ -85,6 +92,16 @@ public class Location
         GetPoint(pointPosition).ChangeState(isActive);
     }
 
+    private void SubscribeWall()
+    {
+        wallPoints.OnAddWallPointEvent += OnAddWallPointHandler;
+    }
+
+    private void OnAddWallPointHandler(PointPosition pointPosition)
+    {
+        GetPoint(pointPosition).ChangeState(true);
+    }
+
     #endregion
 
     private Point GetPoint(PointPosition pointPosition)
@@ -96,31 +113,45 @@ public class Location
     public bool IsEmptyPoint(PointPosition pointPosition)
     {
         bool isEmpty = true;
-        // TODO proverit
-        isEmpty = snakePoints.PointPositions.Where(x => x.Width == pointPosition.Width &&
-                                                        x.Height == pointPosition.Height).Count() == 0;
+
+        if (isEmpty && wallPoints != null)
+        {
+            isEmpty = wallPoints.GetPointPosition(pointPosition) == null;
+        }
+
+        if (isEmpty && snakePoints != null)
+        {
+            isEmpty = snakePoints.GetPointPosition(pointPosition) == null;
+        }
+
         if (isEmpty && foodPoints != null)
         {
-            isEmpty = foodPoints.PointPositions.Where(x => x.Width == pointPosition.Width &&
-                                                           x.Height == pointPosition.Height).Count() == 0;
+            isEmpty = foodPoints.GetPointPosition(pointPosition) == null;
         }
         return isEmpty;
     }
 
     public bool IsDamagePoint(PointPosition pointPosition)
     {
-        bool isDamagePoint = true;
-        // TODO proverit
-        isDamagePoint = snakePoints.PointPositions.Where(x => x.Width == pointPosition.Width &&
-                                                              x.Height == pointPosition.Height).Count() != 0;
+        bool isDamagePoint = false;
+
+        if (!isDamagePoint && wallPoints != null)
+        {
+            isDamagePoint = wallPoints.GetPointPosition(pointPosition) != null;
+        }
+
+        if (!isDamagePoint && snakePoints != null)
+        {
+            isDamagePoint = snakePoints.GetPointPosition(pointPosition) != null;
+        }
+
         return isDamagePoint;
     }
 
     public bool IsFoodPoint(PointPosition pointPosition)
     {
         bool isFood = true;
-        isFood = foodPoints.PointPositions.Where(x => x.Width == pointPosition.Width &&
-                                                      x.Height == pointPosition.Height).Count() != 0;
+        isFood = foodPoints.GetPointPosition(pointPosition) != null;
         return isFood;
     }
 
@@ -140,6 +171,30 @@ public class Location
                 points[id] = SpawnPoints(width, height);
                 id++;
             }
+        }
+    }
+
+    private void CheckGenerateWall()
+    {
+        if (!MainController.Instance.HasWall)
+        {
+            return;
+        }
+        wallPoints = new WallPoints();
+        SubscribeWall();
+        for (int i = 0; i < MainController.Instance.Width; i++)
+        {
+            PointPosition pointPosition0 = new PointPosition(i, 0);
+            PointPosition pointPosition1 = new PointPosition(i, MainController.Instance.Height - 1);
+            wallPoints.AddPoint(pointPosition0);
+            wallPoints.AddPoint(pointPosition1);
+        }
+        for (int i = 1; i < MainController.Instance.Height - 1; i++)
+        {
+            PointPosition pointPosition0 = new PointPosition(0, i);
+            PointPosition pointPosition1 = new PointPosition(MainController.Instance.Width - 1, i);
+            wallPoints.AddPoint(pointPosition0);
+            wallPoints.AddPoint(pointPosition1);
         }
     }
 
