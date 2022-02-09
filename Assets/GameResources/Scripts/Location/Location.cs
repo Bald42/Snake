@@ -96,9 +96,24 @@ public class Location
     public bool IsEmptyPoint(PointPosition pointPosition)
     {
         bool isEmpty = true;
+        // TODO proverit
         isEmpty = snakePoints.PointPositions.Where(x => x.Width == pointPosition.Width &&
                                                         x.Height == pointPosition.Height).Count() == 0;
+        if (isEmpty && foodPoints != null)
+        {
+            isEmpty = foodPoints.PointPositions.Where(x => x.Width == pointPosition.Width &&
+                                                           x.Height == pointPosition.Height).Count() == 0;
+        }
         return isEmpty;
+    }
+
+    public bool IsDamagePoint(PointPosition pointPosition)
+    {
+        bool isDamagePoint = true;
+        // TODO proverit
+        isDamagePoint = snakePoints.PointPositions.Where(x => x.Width == pointPosition.Width &&
+                                                              x.Height == pointPosition.Height).Count() != 0;
+        return isDamagePoint;
     }
 
     public bool IsFoodPoint(PointPosition pointPosition)
