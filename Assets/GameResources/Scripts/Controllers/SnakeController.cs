@@ -7,18 +7,23 @@ using System;
 public class SnakeController : MonoBehaviour
 {
     public static Action<SnakePoints> OnAddSnakeEvent = null;
+    public static Action<PointPosition, int> OnEatingFoodEvent = null;
+    public static Action<int> OnDeadEvent = null;
+
     private int id = 0;
     private ActionController actionController = null;
     private DirectionMove currentDirectionMove = DirectionMove.Right;
     private float defaultSpeed = 0.5f;
     private float currentSpeed = 0.5f;
 
-    [SerializeField] private SnakePoints snakePoints = null;
+    private SnakePoints snakePoints = null;
     private Coroutine move = null;
     private int widthNextPoint = 0;
     private int heightNextPoint = 0;
 
     private WaitForSeconds delayMove = null;
+
+    private Location location = null;
 
     public void Init(int id, PointPosition startPointPosition)
     {
@@ -28,6 +33,7 @@ public class SnakeController : MonoBehaviour
 
     private void InitAfterSpawn(int id, PointPosition startPointPosition)
     {
+        CashLinks();
         this.id = id;
 #if UNITY_EDITOR
         actionController = new PCActionController();
@@ -38,6 +44,11 @@ public class SnakeController : MonoBehaviour
         CreateSnakePoints(startPointPosition);
         actionController.Init();
         Subscribe();
+    }
+
+    private void CashLinks()
+    {
+        location = MainController.Instance.GameController.Location;
     }
 
     #region Subscribes
@@ -129,8 +140,13 @@ public class SnakeController : MonoBehaviour
 
     private void MoveNextPoint()
     {
-        PointPosition pointPosition = NextPointPosition;
-        snakePoints.MoveNextPoint(pointPosition);
+        PointPosition nextPointPosition = NextPointPosition;
+        if (location.IsFoodPoint(nextPointPosition))
+        {
+            snakePoints.AddPoint(nextPointPosition);
+            OnEatingFoodEvent?.Invoke(nextPointPosition, id);
+        }
+        snakePoints.MoveNextPoint(nextPointPosition);
     }
 
     private PointPosition NextPointPosition

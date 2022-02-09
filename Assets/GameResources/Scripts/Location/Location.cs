@@ -6,6 +6,7 @@ public class Location
     private Point[] points = null;
 
     private SnakePoints snakePoints = null;
+    private FoodPoints foodPoints = null;
 
     public void Init()
     {
@@ -15,29 +16,61 @@ public class Location
 
     #region Subscribe 
 
+    private void OnDestroyHandler()
+    {
+        Unsubscribe();
+    }
+
     private void Subscribe()
     {
         MainController.Instance.OnDestroyEvent += OnDestroyHandler;
         SnakeController.OnAddSnakeEvent += OnAddSnakeHandler;
+        FoodController.OnAddFoodPointsEvent += OnAddFoodPointsHandler;
     }
 
     private void Unsubscribe()
     {
         MainController.Instance.OnDestroyEvent -= OnDestroyHandler;
         SnakeController.OnAddSnakeEvent -= OnAddSnakeHandler;
+        FoodController.OnAddFoodPointsEvent -= OnAddFoodPointsHandler;
+
         if (snakePoints != null)
         {
             snakePoints.OnChangeSnakePointEvent -= OnChangeSnakePointHandler;
         }
+
+        if (foodPoints != null)
+        {
+            foodPoints.OnAddFoodPointEvent -= OnAddFoodPointHandler;
+        }
     }
 
-    private void OnDestroyHandler()
+    private void OnAddFoodPointsHandler(FoodPoints foodPoints)
     {
-        Unsubscribe();
+        if (foodPoints != null)
+        {
+            foodPoints.OnAddFoodPointEvent -= OnAddFoodPointHandler;
+        }
+        this.foodPoints = foodPoints;
+        SubscribeFood();
     }
 
-    public void OnAddSnakeHandler(SnakePoints snakePoints)
+    private void SubscribeFood()
     {
+        foodPoints.OnAddFoodPointEvent += OnAddFoodPointHandler;
+    }
+
+    private void OnAddFoodPointHandler(PointPosition pointPosition)
+    {
+        GetPoint(pointPosition).ChangeState(true);
+    }
+
+    private void OnAddSnakeHandler(SnakePoints snakePoints)
+    {
+        if (snakePoints != null)
+        {
+            snakePoints.OnChangeSnakePointEvent -= OnChangeSnakePointHandler;
+        }
         this.snakePoints = snakePoints;
         SubcribeSnake();
     }
@@ -58,6 +91,22 @@ public class Location
     {
         return points.Where(x => x.PointPosition.Width == pointPosition.Width &&
                                  x.PointPosition.Height == pointPosition.Height).FirstOrDefault();
+    }
+
+    public bool IsEmptyPoint(PointPosition pointPosition)
+    {
+        bool isEmpty = true;
+        isEmpty = snakePoints.PointPositions.Where(x => x.Width == pointPosition.Width &&
+                                                        x.Height == pointPosition.Height).Count() == 0;
+        return isEmpty;
+    }
+
+    public bool IsFoodPoint(PointPosition pointPosition)
+    {
+        bool isFood = true;
+        isFood = foodPoints.PointPositions.Where(x => x.Width == pointPosition.Width &&
+                                                      x.Height == pointPosition.Height).Count() != 0;
+        return isFood;
     }
 
     private void GenerateLocation()

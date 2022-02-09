@@ -9,7 +9,7 @@ public class ActionController
     public Action OnStopHoldMoveEvent = null;
 
     private float currentTimeHold = 0f;
-    private float maxTimeHold = 0.5f;
+    private float maxTimeHold = 0.1f;
 
     private bool isHold = false;
 
