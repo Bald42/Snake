@@ -8,7 +8,7 @@ public class SnakePoints
     public Action<bool, PointPosition> OnChangeSnakePointEvent = null;
 
     private int id = 0;
-    [SerializeField] private List<PointPosition> pointPositions = new List<PointPosition>();
+    private List<PointPosition> pointPositions = new List<PointPosition>();
 
     public int Id
     {
@@ -18,11 +18,19 @@ public class SnakePoints
         }
     }
 
+    public List<PointPosition> PointPositions
+    {
+        get
+        {
+            return pointPositions;
+        }
+    }
+
     private PointPosition lastPointPositions
     {
         get
         {
-            return pointPositions[0];
+            return pointPositions[pointPositions.Count - 1];
         }
     }
 
@@ -38,7 +46,7 @@ public class SnakePoints
     {
         get
         {
-            return pointPositions[pointPositions.Count - 1];
+            return pointPositions[0];
         }
     }
 
@@ -53,7 +61,7 @@ public class SnakePoints
 
     public void AddPoint(PointPosition pointPosition)
     {
-        pointPositions.Add(pointPosition);
+        pointPositions.Insert(0, pointPosition);
         OnChangeSnakePointEvent?.Invoke(true, pointPosition);
     }
 
@@ -61,7 +69,7 @@ public class SnakePoints
     {
         AddPoint(pointPosition);
         OnChangeSnakePointEvent?.Invoke(false, lastPointPositions);
-        pointPositions.RemoveAt(0);
+        pointPositions.RemoveAt(pointPositions.Count - 1);
     }
 
     #endregion

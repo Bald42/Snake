@@ -7,12 +7,23 @@ public class GameController
     private Location location = new Location();
 
     private SnakeController snakeController = null;
+    private FoodController foodController = null;
+
     private bool isActive = false;
+
+    public Location Location
+    {
+        get
+        {
+            return location;
+        }
+    }
 
     public void Init()
     {
         location.Init();
         InitSnake();
+        InitFoodController();
         Subscribe();
     }
 
@@ -21,6 +32,12 @@ public class GameController
         snakeController = new SnakeController();
         PointPosition pointPosition = new PointPosition(3, 3);
         snakeController.Init(0, pointPosition);
+    }
+
+    private void InitFoodController()
+    {
+        foodController = new FoodController();
+        foodController.Init();
     }
 
     #region Subscribe 
