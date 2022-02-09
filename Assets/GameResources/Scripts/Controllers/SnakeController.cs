@@ -10,12 +10,15 @@ public class SnakeController : MonoBehaviour
     private int id = 0;
     private ActionController actionController = null;
     private DirectionMove currentDirectionMove = DirectionMove.Right;
-    private DirectionMove lastDirectionMove = DirectionMove.Right;
-    private float speed = 1f;
-    private SnakePoints snakePoints = null;
+    private float defaultSpeed = 0.5f;
+    private float currentSpeed = 0.5f;
+
+    [SerializeField] private SnakePoints snakePoints = null;
     private Coroutine move = null;
     private int widthNextPoint = 0;
     private int heightNextPoint = 0;
+
+    private WaitForSeconds delayMove = null;
 
     public void Init(int id, PointPosition startPointPosition)
     {
@@ -39,32 +42,68 @@ public class SnakeController : MonoBehaviour
 
     #region Subscribes
 
+    private void OnDestroyHandler()
+    {
+        Unsubscribe();
+        StopAllCoroutines();
+        move = null;
+    }
+
     private void Subscribe()
     {
         MainController.Instance.OnDestroyEvent += OnDestroyHandler;
         MainController.Instance.GameController.OnStartEvent += OnStartHandler;
+
         actionController.OnChangeDirectionMoveEvent += OnChangeDirectionMoveHandler;
+        actionController.OnStartHoldMoveEvent += OnStartHoldMoveHandler;
+        actionController.OnStopHoldMoveEvent += OnStopHoldMoveHandler;
     }
 
     private void Unsubscribe()
     {
         MainController.Instance.OnDestroyEvent -= OnDestroyHandler;
         MainController.Instance.GameController.OnStartEvent -= OnStartHandler;
-        actionController.OnChangeDirectionMoveEvent -= OnChangeDirectionMoveHandler;
-    }
 
-    private void OnDestroyHandler()
-    {
-        Unsubscribe();
-        StopAllCoroutines();
+        actionController.OnChangeDirectionMoveEvent -= OnChangeDirectionMoveHandler;
+        actionController.OnStartHoldMoveEvent -= OnStartHoldMoveHandler;
+        actionController.OnStopHoldMoveEvent -= OnStopHoldMoveHandler;
     }
 
     private void OnChangeDirectionMoveHandler(DirectionMove directionMove)
     {
+        if (snakePoints.PointPositionsCount > 1)
+        {
+            if ((currentDirectionMove == DirectionMove.Left && directionMove == DirectionMove.Right) ||
+                (currentDirectionMove == DirectionMove.Right && directionMove == DirectionMove.Left) ||
+                (currentDirectionMove == DirectionMove.Top && directionMove == DirectionMove.Down) ||
+                (currentDirectionMove == DirectionMove.Down && directionMove == DirectionMove.Top))
+            {
+                return;
+            }
+        }
         currentDirectionMove = directionMove;
     }
 
     private void OnStartHandler()
+    {
+        StartMove();
+    }
+
+    private void OnStartHoldMoveHandler()
+    {
+        ChangeSpeedForHold(true);
+        StartMove();
+    }
+
+    private void OnStopHoldMoveHandler()
+    {
+        ChangeSpeedForHold(false);
+        StartMove();
+    }
+
+    #endregion
+
+    private void StartMove()
     {
         if (move != null)
         {
@@ -73,15 +112,18 @@ public class SnakeController : MonoBehaviour
         move = StartCoroutine(Move());
     }
 
-    #endregion
+    private void ChangeSpeedForHold(bool isHold)
+    {
+        currentSpeed = isHold ? defaultSpeed * 0.2f : defaultSpeed;
+    }
 
     private IEnumerator Move()
     {
-        var delay = new WaitForSeconds(0.5f);
         while (true)
         {
-            yield return delay;
             MoveNextPoint();
+            delayMove = new WaitForSeconds(currentSpeed);
+            yield return delayMove;
         }
     }
 

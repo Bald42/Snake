@@ -8,7 +8,7 @@ public class SnakePoints
     public Action<bool, PointPosition> OnChangeSnakePointEvent = null;
 
     private int id = 0;
-    private List<PointPosition> pointPositions = new List<PointPosition>();
+    [SerializeField] private List<PointPosition> pointPositions = new List<PointPosition>();
 
     public int Id
     {
@@ -26,7 +26,7 @@ public class SnakePoints
         }
     }
 
-    private int PointPositionsCount
+    public int PointPositionsCount
     {
         get
         {
