@@ -1,3 +1,5 @@
+using UnityEngine.SceneManagement;
+using static Enums;
 using UnityEngine;
 using System;
 
@@ -10,6 +12,9 @@ public class GameController
     private FoodController foodController = null;
 
     private bool isActive = false;
+
+    private GameState gameState = GameState.Null;
+    private string nameScene = "Game";
 
     public Location Location
     {
@@ -25,6 +30,7 @@ public class GameController
         InitSnake();
         InitFoodController();
         Subscribe();
+        ChangeState(GameState.WaitStart);
     }
 
     private void InitSnake()
@@ -46,12 +52,14 @@ public class GameController
     {
         MainController.Instance.OnDestroyEvent += OnDestroyHandler;
         MainController.Instance.OnUpdateEvent += OnUpdateHandler;
+        SnakeController.OnDeadSnakeEvent += OnDeadSnakeHandler;
     }
 
     private void Unsubscribe()
     {
         MainController.Instance.OnDestroyEvent -= OnDestroyHandler;
         MainController.Instance.OnUpdateEvent -= OnUpdateHandler;
+        SnakeController.OnDeadSnakeEvent -= OnDeadSnakeHandler;
     }
 
     private void OnDestroyHandler()
@@ -64,14 +72,41 @@ public class GameController
         OnUpdate();
     }
 
+    private void OnDeadSnakeHandler(int _)
+    {
+        ChangeState(GameState.Finish);
+    }
+
     #endregion
 
     private void OnUpdate()
     {
-        if (!isActive && Input.anyKeyDown)
+        switch (gameState)
         {
-            isActive = true;
-            OnStartEvent?.Invoke();
+            case GameState.WaitStart:
+                {
+                    if (!isActive && Input.anyKeyDown)
+                    {
+                        isActive = true;
+                        OnStartEvent?.Invoke();
+                    }
+                }
+                break;
+            case GameState.Finish:
+                {
+                    if (Input.anyKeyDown)
+                    {
+                        SceneManager.LoadScene(nameScene);
+                    }
+                }
+                break;
+            default:
+                break;
         }
+    }
+
+    private void ChangeState(GameState gameState)
+    {
+        this.gameState = gameState;
     }
 }

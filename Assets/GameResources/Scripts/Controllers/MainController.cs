@@ -9,6 +9,7 @@ public class MainController : MonoBehaviour
 
     [SerializeField] private int width = 0;
     [SerializeField] private int height = 0;
+    [SerializeField] private bool hasWall = false;
     [SerializeField] private SceneLinks sceneLinks = null;
 
     private Spawner spawner = null;
@@ -46,6 +47,14 @@ public class MainController : MonoBehaviour
         get
         {
             return height;
+        }
+    }
+
+    public bool HasWall
+    {
+        get
+        {
+            return hasWall;
         }
     }
 

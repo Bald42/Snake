@@ -8,4 +8,13 @@ public static class Enums
         Top = 3,
         Down = 4
     }
+
+    public enum GameState
+    {
+        Null = 0,
+        WaitStart = 1,
+        Game = 2,
+        Pause = 3,
+        Finish = 4
+    }
 }

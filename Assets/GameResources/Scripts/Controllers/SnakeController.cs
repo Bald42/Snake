@@ -8,7 +8,7 @@ public class SnakeController : MonoBehaviour
 {
     public static Action<SnakePoints> OnAddSnakeEvent = null;
     public static Action<PointPosition, int> OnEatingFoodEvent = null;
-    public static Action<int> OnDeadEvent = null;
+    public static Action<int> OnDeadSnakeEvent = null;
 
     private int id = 0;
     private ActionController actionController = null;
@@ -103,13 +103,13 @@ public class SnakeController : MonoBehaviour
     private void OnStartHoldMoveHandler()
     {
         ChangeSpeedForHold(true);
-        StartMove();
+        //StartMove();
     }
 
     private void OnStopHoldMoveHandler()
     {
         ChangeSpeedForHold(false);
-        StartMove();
+        //StartMove();
     }
 
     #endregion
@@ -132,21 +132,37 @@ public class SnakeController : MonoBehaviour
     {
         while (true)
         {
-            MoveNextPoint();
             delayMove = new WaitForSeconds(currentSpeed);
             yield return delayMove;
+            MoveNextPoint();
         }
     }
 
     private void MoveNextPoint()
     {
         PointPosition nextPointPosition = NextPointPosition;
+
         if (location.IsFoodPoint(nextPointPosition))
         {
             snakePoints.AddPoint(nextPointPosition);
             OnEatingFoodEvent?.Invoke(nextPointPosition, id);
+            return;
         }
+
+        if (location.IsDamagePoint(nextPointPosition))
+        {
+            Die();
+            return;
+        }
+
         snakePoints.MoveNextPoint(nextPointPosition);
+    }
+
+    private void Die()
+    {
+        CustomDebug.LogOnlyEditor($"Die", Color.red);
+        OnDeadSnakeEvent?.Invoke(id);
+        StopAllCoroutines();
     }
 
     private PointPosition NextPointPosition
