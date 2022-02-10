@@ -5,13 +5,13 @@ namespace DataBase
     [CreateAssetMenu(fileName = "GameResourcesDB", menuName = "GameScriptableObjects/GameResourcesDB", order = 1)]
     public class GameResourcesDB : ScriptableObject
     {
-        [SerializeField] private Point point = null;
+        [SerializeField] private ObjectPoint objectPoint = null;
 
-        public Point Point
+        public ObjectPoint ObjectPoint
         {
             get
             {
-                return point;
+                return objectPoint;
             }
         }
     }

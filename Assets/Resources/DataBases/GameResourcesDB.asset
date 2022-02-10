@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d3003bdab2b56249a88c6bee10d0b60, type: 3}
   m_Name: GameResourcesDB
   m_EditorClassIdentifier: 
-  point: {fileID: 6806133504482227981, guid: 5764459ed3fc5fd4e9682559cb7e1b40, type: 3}
+  objectPoint: {fileID: 7693228156548040499, guid: 5764459ed3fc5fd4e9682559cb7e1b40,
+    type: 3}

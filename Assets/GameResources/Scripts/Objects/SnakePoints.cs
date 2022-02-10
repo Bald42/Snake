@@ -1,29 +1,18 @@
-using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 using System;
 
-public class SnakePoints
+public class SnakePoints : BasePointPositions
 {
     /// <summary>”казываем позицию точки которую надо активировать/деактивировать, указываем состо€ние</summary>
     public Action<bool, PointPosition> OnChangeSnakePointEvent = null;
 
     private int id = 0;
-    private List<PointPosition> pointPositions = new List<PointPosition>();
 
     public int Id
     {
         get
         {
             return id;
-        }
-    }
-
-    public List<PointPosition> PointPositions
-    {
-        get
-        {
-            return pointPositions;
         }
     }
 
@@ -54,11 +43,6 @@ public class SnakePoints
     public SnakePoints(int id)
     {
         this.id = id;
-    }
-
-    public PointPosition GetPointPosition(PointPosition pointPosition)
-    {
-        return pointPositions.Where(x => x.Width == pointPosition.Width && x.Height == pointPosition.Height).FirstOrDefault();
     }
 
     // TODO сделать через враппер

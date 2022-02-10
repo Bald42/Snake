@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Point : MonoBehaviour
+public class ObjectPoint : MonoBehaviour
 {
     [SerializeField] private Color white = default;
     [SerializeField] private Color black = default;

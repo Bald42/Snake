@@ -18,9 +18,9 @@ public class Spawner : MonoBehaviour
         return component;
     }
 
-    public Point SpawnPoints(int width, int height)
+    public ObjectPoint SpawnPoints(int width, int height)
     {
-        Point point = Instantiate(DataBases.GameResourcesWrapper.Point,
+        ObjectPoint point = Instantiate(DataBases.GameResourcesWrapper.ObjectPoint,
                                   new Vector3(width, 0f, height),
                                   Quaternion.identity,
                                   MainController.Instance.SceneLinks.Location);

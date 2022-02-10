@@ -11,8 +11,9 @@ public class SnakeController : MonoBehaviour
     public static Action<int> OnDeadSnakeEvent = null;
 
     private int id = 0;
-    private ActionController actionController = null;
+    private SnakeInputController snakeInputController = null;
     private DirectionMove currentDirectionMove = DirectionMove.Right;
+    private DirectionMove lastDirectionMove = DirectionMove.Null;
     private float defaultSpeed = 0.5f;
     private float currentSpeed = 0.5f;
 
@@ -36,14 +37,15 @@ public class SnakeController : MonoBehaviour
         CashLinks();
         this.id = id;
 #if UNITY_EDITOR
-        actionController = new PCActionController();
+        snakeInputController = new PCSnakeInputController();
 #else
         // TODOOO пока нет других контроллеров
-        actionController = new PCActionController();
+        snakeInputController = new PCSnakeInputController();
 #endif
         CreateSnakePoints(startPointPosition);
-        actionController.Init();
+        snakeInputController.Init();
         Subscribe();
+        lastDirectionMove = currentDirectionMove;
     }
 
     private void CashLinks()
@@ -65,9 +67,9 @@ public class SnakeController : MonoBehaviour
         MainController.Instance.OnDestroyEvent += OnDestroyHandler;
         MainController.Instance.GameController.OnStartEvent += OnStartHandler;
 
-        actionController.OnChangeDirectionMoveEvent += OnChangeDirectionMoveHandler;
-        actionController.OnStartHoldMoveEvent += OnStartHoldMoveHandler;
-        actionController.OnStopHoldMoveEvent += OnStopHoldMoveHandler;
+        snakeInputController.OnChangeDirectionMoveEvent += OnChangeDirectionMoveHandler;
+        snakeInputController.OnStartHoldMoveEvent += OnStartHoldMoveHandler;
+        snakeInputController.OnStopHoldMoveEvent += OnStopHoldMoveHandler;
     }
 
     private void Unsubscribe()
@@ -75,19 +77,19 @@ public class SnakeController : MonoBehaviour
         MainController.Instance.OnDestroyEvent -= OnDestroyHandler;
         MainController.Instance.GameController.OnStartEvent -= OnStartHandler;
 
-        actionController.OnChangeDirectionMoveEvent -= OnChangeDirectionMoveHandler;
-        actionController.OnStartHoldMoveEvent -= OnStartHoldMoveHandler;
-        actionController.OnStopHoldMoveEvent -= OnStopHoldMoveHandler;
+        snakeInputController.OnChangeDirectionMoveEvent -= OnChangeDirectionMoveHandler;
+        snakeInputController.OnStartHoldMoveEvent -= OnStartHoldMoveHandler;
+        snakeInputController.OnStopHoldMoveEvent -= OnStopHoldMoveHandler;
     }
 
     private void OnChangeDirectionMoveHandler(DirectionMove directionMove)
     {
         if (snakePoints.PointPositionsCount > 1)
         {
-            if ((currentDirectionMove == DirectionMove.Left && directionMove == DirectionMove.Right) ||
-                (currentDirectionMove == DirectionMove.Right && directionMove == DirectionMove.Left) ||
-                (currentDirectionMove == DirectionMove.Top && directionMove == DirectionMove.Down) ||
-                (currentDirectionMove == DirectionMove.Down && directionMove == DirectionMove.Top))
+            if ((lastDirectionMove == DirectionMove.Left && directionMove == DirectionMove.Right) ||
+                (lastDirectionMove == DirectionMove.Right && directionMove == DirectionMove.Left) ||
+                (lastDirectionMove == DirectionMove.Top && directionMove == DirectionMove.Down) ||
+                (lastDirectionMove == DirectionMove.Down && directionMove == DirectionMove.Top))
             {
                 return;
             }
@@ -103,13 +105,13 @@ public class SnakeController : MonoBehaviour
     private void OnStartHoldMoveHandler()
     {
         ChangeSpeedForHold(true);
-        //StartMove();
+        StartMove();
     }
 
     private void OnStopHoldMoveHandler()
     {
         ChangeSpeedForHold(false);
-        //StartMove();
+        StartMove();
     }
 
     #endregion
@@ -140,6 +142,7 @@ public class SnakeController : MonoBehaviour
 
     private void MoveNextPoint()
     {
+        lastDirectionMove = currentDirectionMove;
         PointPosition nextPointPosition = NextPointPosition;
 
         if (location.IsFoodPoint(nextPointPosition))

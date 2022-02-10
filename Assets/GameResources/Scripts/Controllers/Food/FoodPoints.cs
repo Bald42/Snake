@@ -3,26 +3,17 @@ using UnityEngine;
 using System.Linq;
 using System;
 
-public class FoodPoints
+public class FoodPoints : BasePointPositions
 {
     public Action<PointPosition> OnAddFoodPointEvent = null;
 
     private int id = 0;
-    private List<PointPosition> pointPositions = new List<PointPosition>();
 
     public int Id
     {
         get
         {
             return id;
-        }
-    }
-
-    public List<PointPosition> PointPositions
-    {
-        get
-        {
-            return pointPositions;
         }
     }
 
@@ -38,11 +29,6 @@ public class FoodPoints
     // TODO сделать через враппер
 
     #region Changes
-
-    public PointPosition GetPointPosition(PointPosition pointPosition)
-    {
-        return pointPositions.Where(x => x.Width == pointPosition.Width && x.Height == pointPosition.Height).FirstOrDefault();
-    }
 
     public void AddPoint(PointPosition pointPosition)
     {

@@ -2,8 +2,18 @@ using UnityEngine;
 
 public class PointPosition
 {
+    string id = string.Empty;
+
     private int width = 0;
     private int height = 0;
+
+    public string Id
+    {
+        get
+        {
+            return id;
+        }
+    }
 
     public int Width
     {
@@ -25,5 +35,6 @@ public class PointPosition
     {
         this.width = width;
         this.height = height;
+        id = $"{width}/{height}";
     }
 }

@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1928259919955852270}
-  - component: {fileID: 6806133504482227981}
+  - component: {fileID: 7693228156548040499}
   m_Layer: 0
   m_Name: Point
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6806133504482227981
+--- !u!114 &7693228156548040499
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,11 +41,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1883044480521791503}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 029225227abda2c45a891af0f6d8d35d, type: 3}
+  m_Script: {fileID: 11500000, guid: 92daabd7fc1aa134cbad59fb3aff9ad5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  white: {r: 0.9, g: 0.9, b: 0.9, a: 0}
-  black: {r: 0.1, g: 0.1, b: 0.1, a: 0}
+  white: {r: 0.90196085, g: 0.90196085, b: 0.90196085, a: 1}
+  black: {r: 0.10196079, g: 0.10196079, b: 0.10196079, a: 1}
 --- !u!1 &3076361296825362687
 GameObject:
   m_ObjectHideFlags: 0
