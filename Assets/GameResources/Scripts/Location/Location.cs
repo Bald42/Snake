@@ -106,8 +106,7 @@ public class Location
 
     private Point GetPoint(PointPosition pointPosition)
     {
-        return points.Where(x => x.PointPosition.Width == pointPosition.Width &&
-                                 x.PointPosition.Height == pointPosition.Height).FirstOrDefault();
+        return points.Where(x => x.PointPosition.Id == pointPosition.Id).FirstOrDefault();
     }
 
     public bool IsEmptyPoint(PointPosition pointPosition)

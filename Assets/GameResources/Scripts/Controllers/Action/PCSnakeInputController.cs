@@ -1,7 +1,7 @@
 using static Enums;
 using UnityEngine;
 
-public class PCActionController : ActionController
+public class PCSnakeInputController : SnakeInputController
 {
     protected override void OnUpdate()
     {

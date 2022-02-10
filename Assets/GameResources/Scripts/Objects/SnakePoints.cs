@@ -58,7 +58,7 @@ public class SnakePoints
 
     public PointPosition GetPointPosition(PointPosition pointPosition)
     {
-        return pointPositions.Where(x => x.Width == pointPosition.Width && x.Height == pointPosition.Height).FirstOrDefault();
+        return pointPositions.Where(x => x.Id == pointPosition.Id).FirstOrDefault();
     }
 
     // TODO сделать через враппер

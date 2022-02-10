@@ -22,7 +22,7 @@ public class WallPoints
 
     public PointPosition GetPointPosition(PointPosition pointPosition)
     {
-        return pointPositions.Where(x => x.Width == pointPosition.Width && x.Height == pointPosition.Height).FirstOrDefault();
+        return pointPositions.Where(x => x.Id == pointPosition.Id).FirstOrDefault();
     }
 
     public void AddPoint(PointPosition pointPosition)

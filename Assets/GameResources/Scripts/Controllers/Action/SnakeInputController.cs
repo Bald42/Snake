@@ -2,7 +2,7 @@ using static Enums;
 using UnityEngine;
 using System;
 
-public class ActionController
+public class SnakeInputController
 {
     public Action<DirectionMove> OnChangeDirectionMoveEvent = null;
     public Action OnStartHoldMoveEvent = null;
