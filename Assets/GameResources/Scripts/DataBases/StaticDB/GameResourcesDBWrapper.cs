@@ -13,11 +13,11 @@ namespace DataBase
             this.gameResourcesDB = gameResourcesDB;
         }
 
-        public Point Point
+        public ObjectPoint ObjectPoint
         {
             get
             {
-                return gameResourcesDB.Point;
+                return gameResourcesDB.ObjectPoint;
             }
         }
     }

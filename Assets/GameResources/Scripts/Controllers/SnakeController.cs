@@ -13,6 +13,7 @@ public class SnakeController : MonoBehaviour
     private int id = 0;
     private SnakeInputController snakeInputController = null;
     private DirectionMove currentDirectionMove = DirectionMove.Right;
+    private DirectionMove lastDirectionMove = DirectionMove.Null;
     private float defaultSpeed = 0.5f;
     private float currentSpeed = 0.5f;
 
@@ -44,6 +45,7 @@ public class SnakeController : MonoBehaviour
         CreateSnakePoints(startPointPosition);
         snakeInputController.Init();
         Subscribe();
+        lastDirectionMove = currentDirectionMove;
     }
 
     private void CashLinks()
@@ -84,10 +86,10 @@ public class SnakeController : MonoBehaviour
     {
         if (snakePoints.PointPositionsCount > 1)
         {
-            if ((currentDirectionMove == DirectionMove.Left && directionMove == DirectionMove.Right) ||
-                (currentDirectionMove == DirectionMove.Right && directionMove == DirectionMove.Left) ||
-                (currentDirectionMove == DirectionMove.Top && directionMove == DirectionMove.Down) ||
-                (currentDirectionMove == DirectionMove.Down && directionMove == DirectionMove.Top))
+            if ((lastDirectionMove == DirectionMove.Left && directionMove == DirectionMove.Right) ||
+                (lastDirectionMove == DirectionMove.Right && directionMove == DirectionMove.Left) ||
+                (lastDirectionMove == DirectionMove.Top && directionMove == DirectionMove.Down) ||
+                (lastDirectionMove == DirectionMove.Down && directionMove == DirectionMove.Top))
             {
                 return;
             }
@@ -140,6 +142,7 @@ public class SnakeController : MonoBehaviour
 
     private void MoveNextPoint()
     {
+        lastDirectionMove = currentDirectionMove;
         PointPosition nextPointPosition = NextPointPosition;
 
         if (location.IsFoodPoint(nextPointPosition))

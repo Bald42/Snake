@@ -3,8 +3,7 @@ using System.Linq;
 
 public class Location
 {
-    private Point[] points = null;
-
+    private ObjectPoints objectPoints = null;
     private SnakePoints snakePoints = null;
     private FoodPoints foodPoints = null;
     private WallPoints wallPoints = null;
@@ -69,7 +68,7 @@ public class Location
 
     private void OnAddFoodPointHandler(PointPosition pointPosition)
     {
-        GetPoint(pointPosition).ChangeState(true);
+        objectPoints.GetPoint(pointPosition).ChangeState(true);
     }
 
     private void OnAddSnakeHandler(SnakePoints snakePoints)
@@ -89,7 +88,7 @@ public class Location
 
     private void OnChangeSnakePointHandler(bool isActive, PointPosition pointPosition)
     {
-        GetPoint(pointPosition).ChangeState(isActive);
+        objectPoints.GetPoint(pointPosition).ChangeState(isActive);
     }
 
     private void SubscribeWall()
@@ -99,15 +98,10 @@ public class Location
 
     private void OnAddWallPointHandler(PointPosition pointPosition)
     {
-        GetPoint(pointPosition).ChangeState(true);
+        objectPoints.GetPoint(pointPosition).ChangeState(true);
     }
 
     #endregion
-
-    private Point GetPoint(PointPosition pointPosition)
-    {
-        return points.Where(x => x.PointPosition.Id == pointPosition.Id).FirstOrDefault();
-    }
 
     public bool IsEmptyPoint(PointPosition pointPosition)
     {
@@ -115,17 +109,17 @@ public class Location
 
         if (isEmpty && wallPoints != null)
         {
-            isEmpty = wallPoints.GetPointPosition(pointPosition) == null;
+            isEmpty = !wallPoints.HasPoint(pointPosition);
         }
 
         if (isEmpty && snakePoints != null)
         {
-            isEmpty = snakePoints.GetPointPosition(pointPosition) == null;
+            isEmpty = !snakePoints.HasPoint(pointPosition);
         }
 
         if (isEmpty && foodPoints != null)
         {
-            isEmpty = foodPoints.GetPointPosition(pointPosition) == null;
+            isEmpty = !foodPoints.HasPoint(pointPosition);
         }
         return isEmpty;
     }
@@ -136,12 +130,12 @@ public class Location
 
         if (!isDamagePoint && wallPoints != null)
         {
-            isDamagePoint = wallPoints.GetPointPosition(pointPosition) != null;
+            isDamagePoint = wallPoints.HasPoint(pointPosition);
         }
 
         if (!isDamagePoint && snakePoints != null)
         {
-            isDamagePoint = snakePoints.GetPointPosition(pointPosition) != null;
+            isDamagePoint = snakePoints.HasPoint(pointPosition);
         }
 
         return isDamagePoint;
@@ -150,7 +144,7 @@ public class Location
     public bool IsFoodPoint(PointPosition pointPosition)
     {
         bool isFood = true;
-        isFood = foodPoints.GetPointPosition(pointPosition) != null;
+        isFood = foodPoints.HasPoint(pointPosition);
         return isFood;
     }
 
@@ -161,13 +155,13 @@ public class Location
 
     private void GeneratePointPositionLocation()
     {
-        points = new Point[MainController.Instance.Width * MainController.Instance.Height];
+        objectPoints = new ObjectPoints(MainController.Instance.Width * MainController.Instance.Height);
         int id = 0;
         for (int width = 0; width < MainController.Instance.Width; width++)
         {
             for (int height = 0; height < MainController.Instance.Height; height++)
             {
-                points[id] = SpawnPoints(width, height);
+                objectPoints.AddPoint(SpawnPoints(width, height), id);
                 id++;
             }
         }
@@ -197,9 +191,9 @@ public class Location
         }
     }
 
-    private Point SpawnPoints(int width, int height)
+    private ObjectPoint SpawnPoints(int width, int height)
     {
-        Point point = MainController.Instance.Spawner.SpawnPoints(width, height);
+        ObjectPoint point = MainController.Instance.Spawner.SpawnPoints(width, height);
         point.Init(width, height);
         return point;
     }
