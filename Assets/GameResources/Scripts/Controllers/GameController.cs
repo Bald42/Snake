@@ -69,7 +69,7 @@ public class GameController
 
     private void OnUpdateHandler()
     {
-        OnUpdate();
+        //OnUpdate();
     }
 
     private void OnDeadSnakeHandler(int _)

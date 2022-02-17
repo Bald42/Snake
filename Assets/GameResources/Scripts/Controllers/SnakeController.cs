@@ -37,14 +37,14 @@ public class SnakeController : MonoBehaviour
         CashLinks();
         this.id = id;
 #if UNITY_EDITOR
-        snakeInputController = new PCSnakeInputController();
+        //snakeInputController = new PCSnakeInputController();
 #else
         // TODOOO пока нет других контроллеров
         snakeInputController = new PCSnakeInputController();
 #endif
         CreateSnakePoints(startPointPosition);
-        snakeInputController.Init();
-        Subscribe();
+        //snakeInputController.Init();
+        //Subscribe();
         lastDirectionMove = currentDirectionMove;
     }
 
